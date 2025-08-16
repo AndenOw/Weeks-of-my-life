@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weeks of My Life</title>
+<style>
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    background: linear-gradient(to bottom, #3b82f6, #60a5fa);
+    display: flex;
+    justify-content: center; /* vertical centering */
+    align-items: center;     /* horizontal centering */
+    min-height: 100vh;       /* ensure full window height */
+    padding: 20px;
+    box-sizing: border-box;
+    flex-direction: column;
+  }
+
+  /* Clouds */
+  .cloud {
+    position: absolute;
+    width: 200px;
+    opacity: 0.7;
+    animation: drift linear infinite;
+  }
+  .cloud1 { top: 10%; left: -200px; animation-duration: 60s; }
+  .cloud2 { top: 35%; left: -300px; animation-duration: 90s; }
+  .cloud3 { top: 55%; left: -250px; animation-duration: 75s; }
+  @keyframes drift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(120vw); }
+  }
+
+  /* Card styling */
+  .card {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 80vw;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+
+  #inputCard h1,
+  #weeksCard h1 {
+    margin-bottom: 16px;
+    color: #1e3a8a;
+  }
+
+  #birthdayInput {
+    width: 80%;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #60a5fa;
+    margin-bottom: 12px;
+  }
+  button {
+    width: 80%;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    background-color: #3b82f6;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  button:hover { background-color: #2563eb; }
+
+  /* Weeks grid */
+  #weeksPoster {
+    display: grid;
+    grid-template-columns: repeat(52, 1fr);
+    gap: 1px;
+    width: 100%;
+    height: 100%;
+  }
+  .week {
+    width: 100%;
+    padding-top: 100%; /* make square */
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 50%;
+    position: relative;
+    box-sizing: border-box;
+  }
+  .week.filled { background-color: #000; }
+</style>
+</head>
+<body>
+
+  <!-- Clouds -->
+  <svg class="cloud cloud1" viewBox="0 0 64 64" fill="white">
+    <path d="M48,32a16,16,0,0,0-31.5-2A12,12,0,0,0,8,42h40A10,10,0,0,0,48,32Z"/>
+  </svg>
+  <svg class="cloud cloud2" viewBox="0 0 64 64" fill="white">
+    <path d="M48,32a16,16,0,0,0-31.5-2A12,12,0,0,0,8,42h40A10,10,0,0,0,48,32Z"/>
+  </svg>
+  <svg class="cloud cloud3" viewBox="0 0 64 64" fill="white">
+    <path d="M48,32a16,16,0,0,0-31.5-2A12,12,0,0,0,8,42h40A10,10,0,0,0,48,32Z"/>
+  </svg>
+
+  <!-- Birthday Input Card -->
+  <div id="inputCard" class="card">
+    <h1>Enter Your Birthday</h1>
+    <form id="birthdayForm">
+      <input type="date" id="birthdayInput" required>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Weeks of My Life Card -->
+  <div id="weeksCard" class="card" style="display:none;">
+    <h1>Weeks of My Life</h1>
+    <div id="weeksPoster"></div>
+  </div>
+
+<script>
+  const totalYears = 90;
+  const weeksPerYear = 52;
+  const totalWeeks = totalYears * weeksPerYear;
+  const weeksPoster = document.getElementById('weeksPoster');
+
+  // Pre-create all week divs
+  for (let i = 0; i < totalWeeks; i++) {
+    const week = document.createElement('div');
+    week.classList.add('week');
+    weeksPoster.appendChild(week);
+  }
+
+  document.getElementById('birthdayForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const birthday = new Date(document.getElementById('birthdayInput').value);
+    const today = new Date();
+    if (birthday > today) { alert('Please enter a valid date in the past.'); return; }
+
+    const diffWeeks = Math.floor((today - birthday) / (1000*60*60*24*7));
+    const weekDivs = weeksPoster.querySelectorAll('.week');
+    weekDivs.forEach((week,index)=>{ week.classList.toggle('filled', index<diffWeeks); });
+
+    document.getElementById('inputCard').style.display='none';
+    document.getElementById('weeksCard').style.display='flex';
+  });
+</script>
+
+</body>
+</html>
